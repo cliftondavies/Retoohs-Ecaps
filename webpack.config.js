@@ -35,6 +35,9 @@ module.exports = {
       },
     ],
   },
+  devServer: {
+    contentBase: path.resolve(__dirname, 'build'),
+  },
   plugins: [
     new Dotenv({
       safe: true,
