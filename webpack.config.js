@@ -6,11 +6,14 @@ const Dotenv = require('dotenv-webpack');
 module.exports = {
   entry: {
     app: './src/index.js',
+    // 'production-dependencies': ['phaser'],
   },
+
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'app.bundle.js',
   },
+
   module: {
     rules: [
       {
@@ -37,9 +40,7 @@ module.exports = {
       },
     ],
   },
-  devServer: {
-    contentBase: path.resolve(__dirname, 'build'),
-  },
+
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
@@ -57,8 +58,28 @@ module.exports = {
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true),
     }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'production-dependencies',
+    //   filename: 'production-dependencies.bundle.js',
+    // }),
     new Dotenv({
       safe: true,
     }),
   ],
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          name: 'commons',
+          chunks: 'initial',
+          minChunks: 2,
+        },
+      },
+    },
+  },
+
+  devServer: {
+    contentBase: path.resolve(__dirname, 'build'),
+  },
 };
