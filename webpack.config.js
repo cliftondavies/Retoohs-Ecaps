@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
@@ -40,9 +41,6 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'build'),
   },
   plugins: [
-    new Dotenv({
-      safe: true,
-    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -50,6 +48,13 @@ module.exports = {
           to: path.resolve(__dirname, 'build'),
         },
       ],
+    }),
+    new webpack.DefinePlugin({
+      'typeof CANVAS_RENDERER': JSON.stringify(true),
+      'typeof WEBGL_RENDERER': JSON.stringify(true),
+    }),
+    new Dotenv({
+      safe: true,
     }),
   ],
 };
