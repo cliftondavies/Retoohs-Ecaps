@@ -398,6 +398,6 @@
      sodipodi:cy="256"
      sodipodi:cx="256"
      id="explosion"
-     style="fill:url(#radialGradient3915);fill-opacity:1;fill-rule:nonzero;stroke:none;visibility:hidden;filter:url(#filter3857)"
+     style="fill:url(#radialGradient3915);fill-opacity:1;fill-rule:nonzero;stroke:none;display:none;filter:url(#filter3857)"
      sodipodi:type="arc" />
 </svg>
