@@ -7,9 +7,30 @@ class GameScene extends Phaser.Scene {
     super('Game');
   }
 
+  async saveScore(score) {
+    try {
+      const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/ifdS41s0Fmwd6vzf41Kt/scores/';
+      const request = {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(score),
+      };
+      const resultJson = await fetch(apiUrl, request);
+      const resultObject = await resultJson.json();
+      return resultObject;
+    } catch (error) {
+      const errorText = this.add.text(10, 10, `${error}`, { fontSize: '15px', fill: '#ff0000' });
+      return errorText;
+    }
+  }
+
   create() {
     this.add.image(400, 300, 'background');
-    gameState.player = this.physics.add.sprite(225, 450, 'player').setScale(0.1);
+    gameState.player = this.physics.add.sprite(400, 450, 'player').setScale(0.1);
 
     gameState.scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '15px', fill: '#ffffff' });
 
@@ -56,43 +77,45 @@ class GameScene extends Phaser.Scene {
       shot.setVelocityY(-260);
     });
 
-    // collider between enemy and player fire
-    this.physics.add.collider(this.enemies, this.playerFire, (enemy, playerFire) => {
+    // overlap between enemy and player fire
+    this.physics.add.overlap(this.enemies, this.playerFire, (enemy, playerFire) => {
       enemy.destroy();
       playerFire.destroy();
       gameState.score += 20;
       gameState.scoreText.setText(`Score: ${gameState.score}`);
     });
 
-    // implement collider between player and enemy fire = game over
-    this.physics.add.collider(gameState.player, this.enemyFire, () => {
+    // implement overlap between player and enemy fire = game over
+    this.physics.add.overlap(gameState.player, this.enemyFire, () => {
       enemyShootLoop.destroy();
       enemyLoop.destroy();
       this.physics.pause();
-      this.add.text(220, 300, 'Game Over!', { fontSize: '15px', fill: '#ffffff' });
-      this.add.text(275, 350, 'Click to see leaderboard', { fontSize: '15px', fill: '#ffffff' });
+      this.add.text(300, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
+      this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
+      this.saveScore({ user: ' ', score: gameState.score });
 
       this.input.on('pointerup', () => {
-        gameState.score = 0;
+        // gameState.score = 0;
         // this.scene.restart();
         this.scene.stop('Game');
-        this.scene.start('Score');
+        this.scene.start('Leaderboard');
       });
     });
 
-    // collider between player and enemy ship = game over
-    this.physics.add.collider(gameState.player, this.enemies, () => {
+    // overlap between player and enemy ship = game over
+    this.physics.add.overlap(gameState.player, this.enemies, () => {
       enemyShootLoop.destroy();
       enemyLoop.destroy();
       this.physics.pause();
-      this.add.text(220, 300, 'Game Over!', { fontSize: '15px', fill: '#ffffff' });
-      this.add.text(275, 350, 'Click to see leaderboard', { fontSize: '15px', fill: '#ffffff' });
+      this.add.text(300, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
+      this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
+      this.saveScore({ user: ' ', score: gameState.score });
 
       this.input.on('pointerup', () => {
-        gameState.score = 0;
+        // gameState.score = 0;
         // this.scene.restart();
         this.scene.stop('Game');
-        this.scene.start('Score');
+        this.scene.start('Leaderboard');
       });
     });
   }
@@ -120,7 +143,7 @@ class GameScene extends Phaser.Scene {
 
     // implement out of bounds for enemy
     this.enemies.getChildren().forEach(enemy => {
-      if (enemy.y > 800) {
+      if (enemy.y > 600) {
         enemy.destroy();
         gameState.score += 20;
         gameState.scoreText.setText(`Score: ${gameState.score}`);
@@ -129,7 +152,7 @@ class GameScene extends Phaser.Scene {
 
     // implement out of bounds for enemy fire
     this.enemyFire.getChildren().forEach(shot => {
-      if (shot.y > 800) {
+      if (shot.y > 600) {
         shot.destroy();
       }
     });
