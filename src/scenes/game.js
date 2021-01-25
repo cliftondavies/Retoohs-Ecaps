@@ -7,25 +7,35 @@ class GameScene extends Phaser.Scene {
     super('Game');
   }
 
-  async saveScore(score) {
-    try {
-      const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/ifdS41s0Fmwd6vzf41Kt/scores/';
-      const request = {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(score),
-      };
-      const resultJson = await fetch(apiUrl, request);
-      const resultObject = await resultJson.json();
-      return resultObject;
-    } catch (error) {
-      const errorText = this.add.text(10, 10, `${error}`, { fontSize: '15px', fill: '#ff0000' });
-      return errorText;
-    }
+  endGame() {
+    this.enemyShootLoop.destroy();
+    this.enemyLoop.destroy();
+    this.physics.pause();
+    this.add.text(320, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
+    this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
+
+    this.input.on('pointerup', async () => {
+      try {
+        const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/ifdS41s0Fmwd6vzf41Kt/scores/';
+        const request = {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user: ' ', score: gameState.score }),
+        };
+        const resultJson = await fetch(apiUrl, request);
+        const resultObject = await resultJson.json();
+        this.scene.stop('Game');
+        this.scene.start('Leaderboard');
+        return resultObject;
+      } catch (error) {
+        const errorText = this.add.text(100, 10, `${error}`, { fontSize: '15px', fill: '#ff0000' });
+        return errorText;
+      }
+    });
   }
 
   create() {
@@ -56,28 +66,26 @@ class GameScene extends Phaser.Scene {
       });
     };
 
-    const enemyLoop = this.time.addEvent({
+    this.enemyLoop = this.time.addEvent({
       delay: 1000,
       callback: spawnEnemy,
       callbackScope: this,
       loop: true,
     });
 
-    const enemyShootLoop = this.time.addEvent({
+    this.enemyShootLoop = this.time.addEvent({
       delay: 1000,
       callback: shootPlayer,
       callbackScope: this,
       loop: true,
     });
 
-    // trigger player fire
     this.input.keyboard.on('keydown-SPACE', () => {
       const { x, y } = gameState.player;
       const shot = this.playerFire.create(x, y, 'playerFire').setScale(0.1);
       shot.setVelocityY(-260);
     });
 
-    // overlap between enemy and player fire
     this.physics.add.overlap(this.enemies, this.playerFire, (enemy, playerFire) => {
       enemy.destroy();
       playerFire.destroy();
@@ -85,38 +93,12 @@ class GameScene extends Phaser.Scene {
       gameState.scoreText.setText(`Score: ${gameState.score}`);
     });
 
-    // implement overlap between player and enemy fire = game over
     this.physics.add.overlap(gameState.player, this.enemyFire, () => {
-      enemyShootLoop.destroy();
-      enemyLoop.destroy();
-      this.physics.pause();
-      this.add.text(300, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
-      this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
-      this.saveScore({ user: ' ', score: gameState.score });
-
-      this.input.on('pointerup', () => {
-        // gameState.score = 0;
-        // this.scene.restart();
-        this.scene.stop('Game');
-        this.scene.start('Leaderboard');
-      });
+      this.endGame();
     });
 
-    // overlap between player and enemy ship = game over
     this.physics.add.overlap(gameState.player, this.enemies, () => {
-      enemyShootLoop.destroy();
-      enemyLoop.destroy();
-      this.physics.pause();
-      this.add.text(300, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
-      this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
-      this.saveScore({ user: ' ', score: gameState.score });
-
-      this.input.on('pointerup', () => {
-        // gameState.score = 0;
-        // this.scene.restart();
-        this.scene.stop('Game');
-        this.scene.start('Leaderboard');
-      });
+      this.endGame();
     });
   }
 
@@ -134,14 +116,12 @@ class GameScene extends Phaser.Scene {
       gameState.player.setVelocityY(0);
     }
 
-    // implement out of bounds for player
     this.playerFire.getChildren().forEach(shot => {
       if (shot.y < 0) {
         shot.destroy();
       }
     });
 
-    // implement out of bounds for enemy
     this.enemies.getChildren().forEach(enemy => {
       if (enemy.y > 600) {
         enemy.destroy();
@@ -150,7 +130,6 @@ class GameScene extends Phaser.Scene {
       }
     });
 
-    // implement out of bounds for enemy fire
     this.enemyFire.getChildren().forEach(shot => {
       if (shot.y > 600) {
         shot.destroy();
