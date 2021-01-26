@@ -39,6 +39,11 @@ module.exports = {
     ],
   },
 
+  devServer: {
+    contentBase: path.resolve(__dirname, 'build'),
+    writeToDisk: true,
+  },
+
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
@@ -68,9 +73,5 @@ module.exports = {
         },
       },
     },
-  },
-
-  devServer: {
-    contentBase: path.resolve(__dirname, 'build'),
   },
 };
