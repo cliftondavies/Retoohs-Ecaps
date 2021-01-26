@@ -43,19 +43,17 @@ The game is split into five scenes:
 
 ## Controls
 
-`SPACE` = PLAYER LASER
-`LEFT ARROW` = MOVE LEFT
-`RIGHT ARROW` = MOVE RIGHT
-`UP ARROW` = MOVE UP
-`DOWN ARROW` = MOVE DOWN
+- `SPACE` = PLAYER LASER
+- `LEFT ARROW` = MOVE LEFT
+- `RIGHT ARROW` = MOVE RIGHT
+- `UP ARROW` = MOVE UP
+- `DOWN ARROW` = MOVE DOWN
 
 ![screenshot](retoohs.png)
 
 ## :tv: Media
 
 [Live Demo Link](https://rawcdn.githack.com/cliftondavies/Retoohs-Ecaps/a1e33f9a683b885e7d901e628ad677e1a4627742/build/index.html)
-
-[Video Presentation]()
 
 ## :toolbox: Tools & Technologies Used
 
