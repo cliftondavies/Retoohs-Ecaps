@@ -1,12 +1,10 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
-const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: {
     app: './src/index.js',
-    // 'production-dependencies': ['phaser'],
   },
 
   output: {
@@ -57,13 +55,6 @@ module.exports = {
     new webpack.DefinePlugin({
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true),
-    }),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'production-dependencies',
-    //   filename: 'production-dependencies.bundle.js',
-    // }),
-    new Dotenv({
-      safe: true,
     }),
   ],
 
