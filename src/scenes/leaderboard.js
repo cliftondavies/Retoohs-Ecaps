@@ -7,6 +7,17 @@ class Leaderboard extends Phaser.Scene {
     super('Leaderboard');
   }
 
+  async getScores(apiUrl) {
+    try {
+      const scoresJson = await fetch(apiUrl);
+      const scoresObject = await scoresJson.json();
+      return scoresObject;
+    } catch (error) {
+      const errorText = this.add.text(10, 560, `${error}`, { fontSize: '15px', fill: '#ff0000' });
+      return errorText;
+    }
+  }
+
   static topTen(scoreObj) {
     return scoreObj.result.sort((a, b) => b.score - a.score).slice(0, 10);
   }
@@ -38,21 +49,10 @@ class Leaderboard extends Phaser.Scene {
     return leaderboardText;
   }
 
-  async getScores(apiUrl) {
-    try {
-      const scoresJson = await fetch(apiUrl);
-      const scoresObject = await scoresJson.json();
-      return scoresObject;
-    } catch (error) {
-      const errorText = this.add.text(10, 560, `${error}`, { fontSize: '15px', fill: '#ff0000' });
-      return errorText;
-    }
-  }
-
   async create() {
     this.add.image(400, 300, 'background');
-    this.add.text(290, 25, 'Top 10 Leaderboard', { fontSize: '25px', fill: '#ffffff' });
-    this.add.text(310, 550, 'Click to play again', { fontSize: '20px', fill: '#ffffff' });
+    const textOne = this.add.text(290, 25, 'Top 10 Leaderboard', { fontSize: '25px', fill: '#ffffff' });
+    const textTwo = this.add.text(310, 550, 'Click to play again', { fontSize: '20px', fill: '#ffffff' });
 
     if (gameState.leaderboard === false) {
       gameState.leaderboard = true;
@@ -72,6 +72,8 @@ class Leaderboard extends Phaser.Scene {
         this.scene.start('Title');
       });
     }
+
+    return { textOne, textTwo }; // OR check gameState.leaderboard === true
   }
 }
 
