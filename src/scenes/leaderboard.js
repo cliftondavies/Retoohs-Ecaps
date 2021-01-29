@@ -7,56 +7,70 @@ class Leaderboard extends Phaser.Scene {
     super('Leaderboard');
   }
 
-  static scoreList(scoresObj) {
-    return scoresObj.result;
+  static topTen(scoreObj) {
+    return scoreObj.result.sort((a, b) => b.score - a.score).slice(0, 10);
   }
 
-  static topTen(scoreList) {
-    const topTen = [];
-    scoreList.forEach(obj => {
-      topTen.push(obj.score);
-    });
-    return Array.from(new Set(topTen)).sort((a, b) => b - a).slice(0, 10);
-  }
-
-  displayLeaderboard(topTen, currentScore) {
+  displayLeaderboard(topTen) {
     const leaderboardText = [];
-    let y = 65;
+    let y = 100;
+
     topTen.forEach((score, index) => {
-      if (score === currentScore) {
-        const text = this.add.text(25, y, `Your Score: ${'.'.repeat(128)} ${score}`, { fontSize: '15px', fill: '#ffffff' });
-        leaderboardText.push(text);
-      } else {
-        const seperator = (index < 9) ? '.'.repeat(143) : '.'.repeat(141);
-        const text = this.add.text(25, y, `${index + 1}: ${seperator} ${score}`, { fontSize: '15px', fill: '#ffffff' });
-        leaderboardText.push(text);
-      }
-      y += 50;
+      const nameText = this.add.text(0, 0, `${index + 1}. ${score.user}`, { fontSize: '15px', fill: '#ffffff' });
+      const scoreText = this.add.text(0, 0, `Score: ${score.score}`, { fontSize: '15px', fill: '#ffffff' });
+      const textObjects = [nameText, scoreText];
+
+      leaderboardText.push(nameText);
+      leaderboardText.push(scoreText);
+
+      Phaser.Actions.GridAlign(textObjects, {
+        width: -1,
+        height: -1,
+        cellWidth: 300,
+        cellHeight: 1,
+        position: 6,
+        x: 275,
+        y,
+      });
+      y += 40;
     }, this);
+
     return leaderboardText;
   }
 
-  async create() {
+  async getScores(apiUrl) {
     try {
-      this.add.image(400, 300, 'background');
-      this.add.text(290, 25, 'Top 10 Leaderboard', { fontSize: '25px', fill: '#ffffff' });
-      this.add.text(310, 550, 'Click to play again', { fontSize: '20px', fill: '#ffffff' });
-      const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/ifdS41s0Fmwd6vzf41Kt/scores/';
       const scoresJson = await fetch(apiUrl);
       const scoresObject = await scoresJson.json();
-      const scoreList = Leaderboard.scoreList(scoresObject);
-      const topTen = Leaderboard.topTen(scoreList);
-      const leaderboardText = this.displayLeaderboard(topTen, gameState.score);
-      this.input.on('pointerup', () => {
-        gameState.score = 0;
-        this.scene.stop('Leaderboard');
-        leaderboardText.forEach(scoreText => scoreText.destroy());
-        this.scene.start('Game');
-      });
-      return leaderboardText;
+      return scoresObject;
     } catch (error) {
       const errorText = this.add.text(10, 560, `${error}`, { fontSize: '15px', fill: '#ff0000' });
       return errorText;
+    }
+  }
+
+  async create() {
+    this.add.image(400, 300, 'background');
+    this.add.text(290, 25, 'Top 10 Leaderboard', { fontSize: '25px', fill: '#ffffff' });
+    this.add.text(310, 550, 'Click to play again', { fontSize: '20px', fill: '#ffffff' });
+
+    if (gameState.leaderboard === false) {
+      gameState.leaderboard = true;
+
+      const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/TW582bP4TH7gwo1Ch2s0/scores/';
+      const scoresObject = await this.getScores(apiUrl);
+      const topTen = Leaderboard.topTen(scoresObject);
+      const leaderboardText = this.displayLeaderboard(topTen);
+
+      this.input.on('pointerup', () => {
+        gameState.score = 1;
+        gameState.name = '';
+        gameState.end = false;
+        gameState.leaderboard = false;
+        this.scene.stop('Leaderboard');
+        leaderboardText.forEach(scoreText => scoreText.destroy());
+        this.scene.start('Title');
+      });
     }
   }
 }

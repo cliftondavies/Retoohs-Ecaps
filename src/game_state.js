@@ -1,5 +1,7 @@
 const gameState = {
-  score: 0,
+  score: 1,
+  end: false,
+  leaderboard: false,
 };
 
 export { gameState as default };

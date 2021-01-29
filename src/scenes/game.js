@@ -7,34 +7,41 @@ class GameScene extends Phaser.Scene {
     super('Game');
   }
 
+  async postScore(apiUrl, request) {
+    try {
+      const resultJson = await fetch(apiUrl, request);
+      const resultObject = await resultJson.json();
+      return resultObject;
+    } catch (error) {
+      const errorText = this.add.text(100, 10, `${error}`, { fontSize: '15px', fill: '#ff0000' });
+      return errorText;
+    }
+  }
+
   endGame() {
+    const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/TW582bP4TH7gwo1Ch2s0/scores/';
+    const request = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: gameState.name, score: gameState.score }),
+    };
+
     this.enemyShootLoop.destroy();
     this.enemyLoop.destroy();
     this.physics.pause();
     this.add.text(320, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
     this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
 
-    this.input.on('pointerup', async () => {
-      try {
-        const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/ifdS41s0Fmwd6vzf41Kt/scores/';
-        const request = {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ user: ' ', score: gameState.score }),
-        };
-        const resultJson = await fetch(apiUrl, request);
-        const resultObject = await resultJson.json();
-        this.scene.stop('Game');
-        this.scene.start('Leaderboard');
-        return resultObject;
-      } catch (error) {
-        const errorText = this.add.text(100, 10, `${error}`, { fontSize: '15px', fill: '#ff0000' });
-        return errorText;
-      }
+    if (gameState.end === false) { this.postScore(apiUrl, request); }
+    gameState.end = true;
+
+    this.input.on('pointerup', () => {
+      this.scene.stop('Game');
+      this.scene.start('Leaderboard');
     });
   }
 
@@ -42,7 +49,7 @@ class GameScene extends Phaser.Scene {
     this.add.image(400, 300, 'background');
     gameState.player = this.physics.add.sprite(400, 450, 'player').setScale(0.1);
 
-    gameState.scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '15px', fill: '#ffffff' });
+    gameState.scoreText = this.add.text(10, 10, 'Score: 1', { fontSize: '15px', fill: '#ffffff' });
 
     gameState.player.setCollideWorldBounds(true);
 
