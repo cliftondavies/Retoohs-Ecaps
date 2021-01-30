@@ -8,8 +8,8 @@ class Title extends Phaser.Scene {
   }
 
   create() {
-    const background = this.add.image(400, 300, 'background');
-    const title = this.add.text(200, 150, 'RETOOH ECAPS', { fontSize: '50px', fill: '#ffffff' });
+    this.add.image(400, 300, 'background');
+    this.add.text(200, 150, 'RETOOH ECAPS', { fontSize: '50px', fill: '#ffffff' });
 
     const nameInput = document.createElement('input');
     nameInput.setAttribute('placeholder', 'Enter your name to start');
@@ -40,8 +40,6 @@ class Title extends Phaser.Scene {
         }
       }
     }, this);
-
-    return { background, title, domElement }; // if possible to load background asset in test?
   }
 }
 
