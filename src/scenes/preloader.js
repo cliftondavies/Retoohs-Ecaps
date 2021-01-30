@@ -7,8 +7,8 @@ class Preloader extends Phaser.Scene {
   }
 
   preload() {
-    const background = this.add.image(400, 300, 'background');
-    const logo = this.add.image(400, 300, 'logo');
+    this.add.image(400, 300, 'background');
+    this.add.image(400, 300, 'logo');
 
     const progressBar = this.add.graphics();
     const progressBox = this.add.graphics();
@@ -72,8 +72,6 @@ class Preloader extends Phaser.Scene {
     this.load.image('enemy', 'assets/starshipdark.svg');
     this.load.image('playerFire', 'assets/projectile2.svg');
     this.load.image('enemyFire', 'assets/projectile1.svg');
-
-    return { background, logo }; // if possible to load background and logo assets in test?
   }
 
   create() {
