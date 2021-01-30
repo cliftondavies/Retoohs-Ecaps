@@ -19,6 +19,7 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "jest": "^26.6.3",
+    "jest-canvas-mock": "^2.3.0",
     "stylelint": "^13.3.3",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-csstree-validator": "^1.9.0",
@@ -32,6 +33,11 @@
     "build": "webpack",
     "watch": "webpack --watch",
     "start:dev": "webpack serve"
+  },
+  "jest": {
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   },
   "repository": {
     "type": "git",
