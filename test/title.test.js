@@ -7,13 +7,15 @@ beforeEach(() => {
   Title.mockClear();
 });
 
-test('Successful initialising of title scene', () => {
-  Title();
-  expect(Title).toHaveBeenCalledTimes(1);
-});
+describe('Initialise title scene', () => {
+  test('when successful', () => {
+    Title();
+    expect(Title).toHaveBeenCalledTimes(1);
+  });
 
-test('Unsuccessful initialising of title scene', () => {
-  expect(Title).not.toHaveBeenCalled();
+  test('when unsuccessful', () => {
+    expect(Title).not.toHaveBeenCalled();
+  });
 });
 
 test('Return value of title create function', () => {

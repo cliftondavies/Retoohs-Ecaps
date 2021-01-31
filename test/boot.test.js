@@ -7,16 +7,18 @@ beforeEach(() => {
   Boot.mockClear();
 });
 
-test('Successful initialising of boot scene', () => {
-  Boot();
-  expect(Boot).toHaveBeenCalledTimes(1);
+describe('Initialising of boot scene', () => {
+  test('when successful', () => {
+    Boot();
+    expect(Boot).toHaveBeenCalledTimes(1);
+  });
+
+  test('when unsuccessful', () => {
+    expect(Boot).not.toHaveBeenCalled();
+  });
 });
 
-test('Unsuccessful initialising of boot scene', () => {
-  expect(Boot).not.toHaveBeenCalled();
-});
-
-test('return value of boot preload function', () => {
+test('Return value of boot preload function', () => {
   const bootScene = new Boot();
   bootScene.preload();
 
@@ -25,7 +27,7 @@ test('return value of boot preload function', () => {
   expect(mockBootPreload.mock.results[0].value).toBe(undefined);
 });
 
-test('return value of boot create function', () => {
+test('Return value of boot create function', () => {
   const bootScene = new Boot();
   bootScene.create();
 

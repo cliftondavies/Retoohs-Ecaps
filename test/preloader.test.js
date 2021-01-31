@@ -7,13 +7,15 @@ beforeEach(() => {
   Preloader.mockClear();
 });
 
-test('Successful initialising of preloader scene', () => {
-  Preloader();
-  expect(Preloader).toHaveBeenCalledTimes(1);
-});
+describe('Creation of preloader scene', () => {
+  test('Successful initialising of preloader scene', () => {
+    Preloader();
+    expect(Preloader).toHaveBeenCalledTimes(1);
+  });
 
-test('Unsuccessful initialising of preloader scene', () => {
-  expect(Preloader).not.toHaveBeenCalled();
+  test('Unsuccessful initialising of preloader scene', () => {
+    expect(Preloader).not.toHaveBeenCalled();
+  });
 });
 
 test('Return value of preloader preload function', () => {
