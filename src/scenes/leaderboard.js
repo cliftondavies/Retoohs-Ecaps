@@ -51,8 +51,8 @@ class Leaderboard extends Phaser.Scene {
 
   async create() {
     this.add.image(400, 300, 'background');
-    const textOne = this.add.text(290, 25, 'Top 10 Leaderboard', { fontSize: '25px', fill: '#ffffff' });
-    const textTwo = this.add.text(310, 550, 'Click to play again', { fontSize: '20px', fill: '#ffffff' });
+    this.add.text(290, 25, 'Top 10 Leaderboard', { fontSize: '25px', fill: '#ffffff' });
+    this.add.text(310, 550, 'Click to play again', { fontSize: '20px', fill: '#ffffff' });
 
     if (gameState.leaderboard === false) {
       gameState.leaderboard = true;
@@ -72,8 +72,6 @@ class Leaderboard extends Phaser.Scene {
         this.scene.start('Title');
       });
     }
-
-    return { textOne, textTwo }; // OR check gameState.leaderboard === true
   }
 }
 
