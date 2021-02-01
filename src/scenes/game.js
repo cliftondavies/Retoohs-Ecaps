@@ -33,8 +33,8 @@ class GameScene extends Phaser.Scene {
     this.enemyShootLoop.destroy();
     this.enemyLoop.destroy();
     this.physics.pause();
-    const textOne = this.add.text(320, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
-    const textTwo = this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
+    this.add.text(320, 250, 'Game Over!', { fontSize: '30px', fill: '#ffffff' });
+    this.add.text(280, 300, 'Click to see leaderboard', { fontSize: '20px', fill: '#ffffff' });
 
     if (gameState.end === false) { this.postScore(apiUrl, request); }
     gameState.end = true;
@@ -43,8 +43,6 @@ class GameScene extends Phaser.Scene {
       this.scene.stop('Game');
       this.scene.start('Leaderboard');
     });
-
-    return { textOne, textTwo }; // Or check gameState.end === true;
   }
 
   create() {
@@ -109,8 +107,6 @@ class GameScene extends Phaser.Scene {
     this.physics.add.overlap(gameState.player, this.enemies, () => {
       this.endGame();
     });
-
-    return { spawnEnemy, shootPlayer }; // OR check truthiness of this.enemies etc
   }
 
   update() {
