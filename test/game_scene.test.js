@@ -19,7 +19,7 @@ describe('Initialisation of game scene', () => {
 });
 
 describe('Post score to leaderboard api', () => {
-  test('correct post request', () => {
+  test('with valid user and score in the body of post request', () => {
     const gameScene = new GameScene();
     const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/m6IvkOM0ZVvqzOvjHVSC/scores/';
     const request = {
@@ -42,7 +42,7 @@ describe('Post score to leaderboard api', () => {
     expect(mockGameScenePostScore.mock.results[0].value).toEqual({ result: 'Leaderboard score created correctly.' });
   });
 
-  test('incorrect post request', () => {
+  test('with invalid user and/or score in the body of post request', () => {
     const gameScene = new GameScene();
     const apiUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/m6IvkOM0ZVvqzOvjHVSC/scores/';
     const request = {
