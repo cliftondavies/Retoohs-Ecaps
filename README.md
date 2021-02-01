@@ -53,7 +53,7 @@ The game is split into five scenes:
 
 ## :tv: Media
 
-[Live Demo Link](https://rawcdn.githack.com/cliftondavies/Retoohs-Ecaps/a1e33f9a683b885e7d901e628ad677e1a4627742/build/index.html)
+[Live Demo Link](https://rawcdn.githack.com/cliftondavies/Retoohs-Ecaps/45d7d0de471b4e54361ee650ee0ab421b818b0bf/build/index.html)
 
 ## :toolbox: Tools & Technologies Used
 
